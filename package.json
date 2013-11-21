@@ -1,0 +1,9 @@
+{
+  "name": "points",
+  "description": "Show POIs on the map",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x"
+  }
+}

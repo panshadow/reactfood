@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- The core React library -->
+  <script src="/public/js/react.min..js"></script>
+  <!-- In-browser JSX transformer, remove when pre-compiling JSX. -->
+  <script src="/public/js/JSXTransformer.js"></script>
+</head>
+<body>
+  <div id="map-layer"></div>
+  <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbI1fN1caojosiUpJbRWuJ-yd64A6GNtU&amp;sensor=false">
+  </script>
+  <script type="text/javascript">
+  function initGoogleMap() {
+    var mapLayer = document.getElementById('map-layer'),
+      mapOptions = {
+        center: new google.maps.LatLng(50.44876015027149, 30.531005859375),
+        zoom: 12
+      }, 
+      map = new google.maps.Map(mapLayer, mapOptions);
+      google.maps.event.addListener(map, 'click', function(evt) {
+        console.log('click to',evt.latLng);
+        map.setCenter(evt.latLng);
+      });
+  }
+  google.maps.event.addDomListener(window, 'load', initGoogleMap);
+  </script>
+</body>
+</html>
