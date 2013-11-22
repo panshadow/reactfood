@@ -8,7 +8,12 @@ body {
   padding: 0;
 }
 
-#map-layer {
+#zero-layer {
   height: 100%;
-  background-color: silver;
+}
+
+.google-map {
+  width: 640px;
+  height: 360px;
+  margin: 10px;
 }

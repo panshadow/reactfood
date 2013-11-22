@@ -1,31 +1,25 @@
 <!doctype html>
 <html>
 <head>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
   <!-- The core React library -->
-  <script src="/public/js/react.min..js"></script>
+  <script src="js/react.min.js"></script>
   <!-- In-browser JSX transformer, remove when pre-compiling JSX. -->
-  <script src="/public/js/JSXTransformer.js"></script>
-</head>
-<body>
-  <div id="map-layer"></div>
+  <script src="js/JSXTransformer.js"></script>
   <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbI1fN1caojosiUpJbRWuJ-yd64A6GNtU&amp;sensor=false">
   </script>
-  <script type="text/javascript">
-  function initGoogleMap() {
-    var mapLayer = document.getElementById('map-layer'),
-      mapOptions = {
-        center: new google.maps.LatLng(50.44876015027149, 30.531005859375),
-        zoom: 12
-      }, 
-      map = new google.maps.Map(mapLayer, mapOptions);
-      google.maps.event.addListener(map, 'click', function(evt) {
-        console.log('click to',evt.latLng);
-        map.setCenter(evt.latLng);
-      });
-  }
-  google.maps.event.addDomListener(window, 'load', initGoogleMap);
+  <script type="text/jsx" src="js/script.js"></script>
+</head>
+<body>
+  <div id="zero-layer"></div>
+  <script type="text/jsx">
+  /** @jsx React.DOM */
+
+  React.renderComponent(
+    <mapComponent bounds={[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625]}/>,
+    document.getElementById('zero-layer')
+  );
   </script>
 </body>
 </html>
