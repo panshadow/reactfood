@@ -28,7 +28,6 @@ var mapComponent = React.createClass({
       sw = bound.getSouthWest(),
       ne = bound.getNorthEast();
 
-      console.log('map rebounded');
 
       this.setState({
         bounds: {
@@ -67,7 +66,6 @@ var mapComponent = React.createClass({
   render: function() {
     var bounds = this.state.bounds;
 
-    console.log('map render');
     return (
       <div className="map-component">
         <div ref="map" className="map" />
@@ -85,7 +83,6 @@ var mapComponent = React.createClass({
   },
   componentDidMount: function(rootNode) {
     var self = this;
-    console.log('map mounted');
     this.googleMapInit();
   }
 }),
@@ -99,7 +96,6 @@ POIsSideBar = React.createClass({
       && poi.lat > this.props.bounds.sw.lat
       && poi.lng < this.props.bounds.ne.lat
     );
-    console.log(isin);
     return isin;
   },
   showPOI: function(poi) {
@@ -120,7 +116,6 @@ POIsSideBar = React.createClass({
     };
   },
   render: function() {
-    console.log('poi side bar render');
     return (
       <div className="panel side-bar right">
         <ul>
@@ -133,7 +128,6 @@ POIsSideBar = React.createClass({
 
 POIItem = React.createClass({
   render: function(){
-    console.log('poiItem render '+this.props.poi.name);
     return (<li>{this.props.poi.title}</li>);
   }
 });
