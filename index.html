@@ -1,18 +1,43 @@
 <!doctype html>
 <html>
 <head>
-  <link rel="stylesheet" href="css/style.css">
-  <!-- The core React library -->
+  <link rel="stylesheet/less" type="text/css" href="css/style.css">
+  <script type="text/javascript" src="js/less-1.4.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+
   <script src="js/react.min.js"></script>
-  <!-- In-browser JSX transformer, remove when pre-compiling JSX. -->
   <script src="js/JSXTransformer.js"></script>
+
+
   <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbI1fN1caojosiUpJbRWuJ-yd64A6GNtU&amp;sensor=false">
   </script>
+
   <script type="text/jsx" src="js/script.js"></script>
 </head>
 <body>
   <div id="zero-layer"></div>
+
+
+
+  <script type="text/javascript">
+    var lsKey='pois',
+      POIList = null;
+
+    $(function(){
+      if ( !(lsKey in localStorage) ) {
+        $.getJSON('js/restaurants.json', function(data){
+          POIList = data
+          localStorage[lsKey] = JSON.stringify(POIList);
+          console.log('...fetched');
+        });
+      }
+      else {
+        POIList = JSON.parse(localStorage[lsKey]);
+      }
+    });
+  </script>
+
   <script type="text/jsx">
   /** @jsx React.DOM */
 
