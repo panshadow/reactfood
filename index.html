@@ -22,18 +22,18 @@
 
   <script type="text/javascript">
     var lsKey='pois',
-      POIList = null;
+      POIs = null;
 
     $(function(){
       if ( !(lsKey in localStorage) ) {
         $.getJSON('js/restaurants.json', function(data){
-          POIList = data
-          localStorage[lsKey] = JSON.stringify(POIList);
+          POIs = data
+          localStorage[lsKey] = JSON.stringify(POIs);
           console.log('...fetched');
         });
       }
       else {
-        POIList = JSON.parse(localStorage[lsKey]);
+        POIs = JSON.parse(localStorage[lsKey]);
       }
     });
   </script>
@@ -42,7 +42,9 @@
   /** @jsx React.DOM */
 
   React.renderComponent(
-    <mapComponent bounds={[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625]}/>,
+    <mapComponent 
+      bounds={[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625]} 
+      list={POIs} />,
     document.getElementById('zero-layer')
   );
   </script>

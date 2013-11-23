@@ -50,6 +50,7 @@ var mapComponent = React.createClass({
   },
   getInitialState: function() {
     return {
+      map: null,
       bounds: {
         sw: {
           lat: 0,
@@ -77,7 +78,7 @@ var mapComponent = React.createClass({
              bounds.ne.lng.toFixed(2)].join(', ')
            }
         </div>
-        <POIsSideBar bounds={this.state.bounds} />
+        <POIList bounds={this.state.bounds} list={this.props.list} map={this.state.map} />
       </div>
       );
   },
@@ -87,7 +88,7 @@ var mapComponent = React.createClass({
   }
 }),
 
-POIsSideBar = React.createClass({
+POIList = React.createClass({
 
   inBounds: function(poi) {
     var isin = (
@@ -97,9 +98,6 @@ POIsSideBar = React.createClass({
       && poi.lng < this.props.bounds.ne.lat
     );
     return isin;
-  },
-  showPOI: function(poi) {
-    return (<POIItem poi={poi} />);
   },
   getDefaultProps: function(){
     return {
@@ -116,19 +114,56 @@ POIsSideBar = React.createClass({
     };
   },
   render: function() {
+    var list = this.props.list.filter(this.inBounds).map(function(poi){
+      return (<POI poi={poi} map={this.props.map} />)
+    }.bind(this));
     return (
       <div className="panel side-bar right">
         <ul>
-          {POIList.filter(this.inBounds).map(this.showPOI)}
+          {list}
         </ul>
       </div>
     )
   }
 }),
 
-POIItem = React.createClass({
+POI = React.createClass({
+  getInitialState: function(){
+    return {
+      marker: new google.maps.Marker({
+        title: this.props.poi.title+'//'+this.props.poi.address.street,
+        position: new google.maps.LatLng(this.props.poi.lat, this.props.poi.lng),
+      })
+    };
+  },
+  componentWillUnmount: function(){
+    this.state.marker.setMap(null);
+  },
+  componentWillMount: function(){
+    this.state.marker.setMap(this.props.map);
+  },
+  componentWillReceiveProps: function(nextProp) {
+    if(this.props.poi.name !== nextProp.poi.name) {
+      this.state.marker.setPosition( 
+        new google.maps.LatLng(this.props.poi.lat, this.props.poi.lng) 
+      );
+      //console.log('!!! %s <> %s',this.props.poi.name,nextProp.poi.name);
+    }
+  },
   render: function(){
-    return (<li>{this.props.poi.title}</li>);
+    var categories = [];
+    if( 'category' in this.props.poi){
+      categories = this.props.poi.category.map(function(cat){
+        return (<span className="category">{cat}</span>);
+      });
+    };
+
+
+    return (
+      <li key={this.props.poi.name}>
+        <h3>{this.props.poi.title}</h3>
+        {categories}
+      </li>);
   }
 });
 
