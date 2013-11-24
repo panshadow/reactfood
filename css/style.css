@@ -63,14 +63,21 @@ body {
             font-weight: bold;
           }
 
-          span.category {
-            font-size: 10px;
-            line-height: 12px;
-            margin: 0 4px;
-            padding: 2px 6px;
-            font-style: italic;
+          div.categories {
+            position: relative;
+            overflow: hidden;
+            
+            span.category {
+              font-size: 10px;
+              line-height: 12px;
+              margin: 0 4px;
+              padding: 2px 6px;
+              font-style: italic;
+              float: right;
 
+            }
           }
+
         }
       }
 

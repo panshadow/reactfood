@@ -114,8 +114,8 @@ POIList = React.createClass({
     };
   },
   render: function() {
-    var list = this.props.list.filter(this.inBounds).map(function(poi){
-      return (<POI poi={poi} map={this.props.map} />)
+    var list = this.props.list.map(function(poi){
+      return (<POI poi={poi} map={this.props.map} show={this.inBounds(poi)} />)
     }.bind(this));
     return (
       <div className="panel side-bar right">
@@ -136,33 +136,36 @@ POI = React.createClass({
       })
     };
   },
-  componentWillUnmount: function(){
-    this.state.marker.setMap(null);
-  },
-  componentWillMount: function(){
-    this.state.marker.setMap(this.props.map);
-  },
-  componentWillReceiveProps: function(nextProp) {
-    if(this.props.poi.name !== nextProp.poi.name) {
-      this.state.marker.setPosition( 
-        new google.maps.LatLng(this.props.poi.lat, this.props.poi.lng) 
-      );
-      //console.log('!!! %s <> %s',this.props.poi.name,nextProp.poi.name);
+  getDefaultProps: function(){
+    return {
+      show: false
     }
+  },
+  shouldComponentUpdate: function(nextProps, nextState){
+    return nextProps.show !== this.props.show; // || !equal(nextState, this.state);
   },
   render: function(){
     var categories = [];
-    if( 'category' in this.props.poi){
-      categories = this.props.poi.category.map(function(cat){
-        return (<span className="category">{cat}</span>);
-      });
-    };
 
+    if (this.props.show) {
+      if ('category' in this.props.poi) {
+        categories = this.props.poi.category.map(function(cat){
+          return (<span className="category">{cat}</span>);
+        });
+      };
+
+      this.state.marker.setMap(this.props.map);
+    }
+    else {
+      this.state.marker.setMap(null);
+    }
 
     return (
-      <li key={this.props.poi.name}>
-        <h3>{this.props.poi.title}</h3>
-        {categories}
+      <li key={this.props.poi.name} style={{display: this.props.show ? 'list-item' : 'none'} }>
+        <h3>{this.props.poi.title}</h3> 
+        <div className="categories">
+          {categories}
+        </div>
       </li>);
   }
 });
