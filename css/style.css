@@ -11,14 +11,18 @@ body {
 }
 
 .map-component {
-  width: 890px;
-  height: 360px;
+  @mapWidth: 640px;
+  @mapHeight: 360px;
+  @sideBarWidth: 250px;
+
+  width: @mapWidth+@sideBarWidth;
+  height: @mapHeight;
   margin: 10px 0 0 10px;
   padding: 0;
   overflow: hidden;
   position: relative;
   .map {
-    width: 640px;
+    width: @mapWidth;
     height: 100%;
     position: absolute;
     top:0;
@@ -33,7 +37,7 @@ body {
     &.side-bar {
       top: 0;
       bottom: 0;
-      width: 250px;
+      width: @sideBarWidth;
       overflow: hidden;
       background: white;
 
@@ -53,20 +57,31 @@ body {
 
         li {
           list-style: none;
-          margin: 0 0 5px 0;
-          padding: 0 2px;
+          margin: 0;
+          padding: 5px;
           color: black;
+          border-bottom: solid 1px silver;
+          cursor: pointer;
+
+          &:last-child {
+            border-bottom-width: 0;
+          }
+
+          &:hover {
+            background-color: #ededed;
+          }
 
           h3 {
             margin: 0;
-            font-size: 14px;
+            font-size: 12px;
+            line-height: 14px;
             font-weight: bold;
           }
 
           div.categories {
             position: relative;
             overflow: hidden;
-            
+
             span.category {
               font-size: 10px;
               line-height: 12px;
@@ -89,6 +104,19 @@ body {
       font-size: 80%;
       background-color: white;
       opacity: .5;
+    }
+
+    &.details {
+      @boxWidth: 480px;
+      @boxHeight: 300px;
+      width: @boxWidth;
+      height: @boxHeight;
+      top: ( @mapHeight - @boxHeight ) / 2;
+      left: ( @mapWidth - @boxWidth ) / 2;
+      
+      margin: 0;
+
+      background-color: rgba(255,255,255,0.75);
     }
   }
 }

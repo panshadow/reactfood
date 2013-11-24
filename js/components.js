@@ -41,8 +41,17 @@ var mapComponent = React.createClass({
           }
         }
       });
-  },
 
+      this.refs.details.setState({
+        show: false
+      });
+  },
+  handleToggleDetails: function(poi) {
+    this.refs.details.setState({
+      show: true,
+      poi: poi
+    });
+  },
   getDefaultProps: function() {
     return {
       showList: false
@@ -78,7 +87,13 @@ var mapComponent = React.createClass({
              bounds.ne.lng.toFixed(2)].join(', ')
            }
         </div>
-        <POIList bounds={this.state.bounds} list={this.props.list} map={this.state.map} />
+        <POIDetails ref="details" />
+        <POIList 
+          bounds={this.state.bounds} 
+          list={this.props.list} 
+          map={this.state.map} 
+          handleToggleDetails={this.handleToggleDetails}
+          />
       </div>
       );
   },
@@ -113,9 +128,16 @@ POIList = React.createClass({
       }
     };
   },
+  handleClick: function(){
+    console.log('clck!');
+  },
   render: function() {
     var list = this.props.list.map(function(poi){
-      return (<POI poi={poi} map={this.props.map} show={this.inBounds(poi)} />)
+      return (<POI 
+        poi={poi} 
+        map={this.props.map} 
+        show={this.inBounds(poi)} 
+        handleToggleDetails={this.props.handleToggleDetails} />);
     }.bind(this));
     return (
       <div className="panel side-bar right">
@@ -126,14 +148,16 @@ POIList = React.createClass({
     )
   }
 }),
-
 POI = React.createClass({
   getInitialState: function(){
-    return {
-      marker: new google.maps.Marker({
+    var marker = new google.maps.Marker({
         title: this.props.poi.title+'//'+this.props.poi.address.street,
         position: new google.maps.LatLng(this.props.poi.lat, this.props.poi.lng),
-      })
+      });
+
+    google.maps.event.addListener(marker, 'click', this.handleClick);
+    return {
+      marker: marker
     };
   },
   getDefaultProps: function(){
@@ -143,6 +167,9 @@ POI = React.createClass({
   },
   shouldComponentUpdate: function(nextProps, nextState){
     return nextProps.show !== this.props.show; // || !equal(nextState, this.state);
+  },
+  handleClick: function() {
+    this.props.handleToggleDetails(this.props.poi);
   },
   render: function(){
     var categories = [];
@@ -161,14 +188,46 @@ POI = React.createClass({
     }
 
     return (
-      <li key={this.props.poi.name} style={{display: this.props.show ? 'list-item' : 'none'} }>
+      <li onClick={this.handleClick}
+        key={this.props.poi.name} 
+        style={{display: this.props.show ? 'list-item' : 'none'} }>
         <h3>{this.props.poi.title}</h3> 
         <div className="categories">
           {categories}
         </div>
       </li>);
   }
+}),
+POIDetails = React.createClass({
+  getInitialState: function() {
+    return {
+      show: false,
+      poi: null
+    }
+  },
+  handleClose: function(){
+    this.setState({
+      show: false
+    });
+  },
+  render: function(){
+    console.log('details render');
+    if (this.state.show) {
+      return (
+        <div className="panel details">
+          <button onClick={this.handleClose}>close</button>
+          <h3>{this.state.poi.title}</h3>
+          <div className="address">{this.state.poi.address.street}</div>
+          <div className="info">{this.state.poi.info.note}</div>
+        </div>
+      )
+    }
+    else{
+      return <div />;
+    }
+  }
 });
+
 
 
 
