@@ -1,9 +1,9 @@
 /** @jsx React.DOM */
 
 var mapComponent = React.createClass({
-  googleMapInit: function(){
+  googleMapInit: function() {
     var self = this;
-    google.maps.event.addDomListener(window, 'load', function(){
+    google.maps.event.addDomListener(window, 'load', function() {
       var mapOptions = {},
         bounds = self.props.cf.bounds,
         map = new google.maps.Map(self.refs.map.getDOMNode(), mapOptions),
@@ -18,12 +18,10 @@ var mapComponent = React.createClass({
         });
         
         map.fitBounds(mapBounds);
-
-
     });
 
   },
-  handleChangeBounds: function(evt){
+  handleChangeBounds: function(evt) {
     var bound = this.state.map.getBounds(),
       sw = bound.getSouthWest(),
       ne = bound.getNorthEast();
@@ -44,10 +42,11 @@ var mapComponent = React.createClass({
 
       this.handleToggleDetails(null);
   },
-  handleToggleDetails: function(poi) {
+  handleToggleDetails: function(poi, index) {
     if (poi!== null) {
       this.refs.details.setState({
-        poi: poi
+        poi: poi,
+        index: index
       });
       this.setState({
         showDetails: true
@@ -85,7 +84,6 @@ var mapComponent = React.createClass({
   render: function() {
     var bounds = this.state.bounds,
       showDetails = this.state.showDetails;
-    console.log('render map ',showDetails);
 
     return (
       <div className="map-component">
@@ -93,8 +91,8 @@ var mapComponent = React.createClass({
         <div ref="boundsLabel" className="panel bounds-label">
           {
             [bounds.sw.lat.toFixed(2),
-             bounds.sw.lng.toFixed(2), 
-             bounds.ne.lat.toFixed(2), 
+             bounds.sw.lng.toFixed(2),
+             bounds.ne.lat.toFixed(2),
              bounds.ne.lng.toFixed(2)].join(', ')
            }
         </div>
@@ -129,7 +127,7 @@ POIList = React.createClass({
     );
     return isin;
   },
-  getDefaultProps: function(){
+  getDefaultProps: function() {
     return {
       bounds: {
         sw: {
@@ -142,9 +140,6 @@ POIList = React.createClass({
         }
       }
     };
-  },
-  handleClick: function(){
-    console.log('clck!');
   },
   render: function() {
     var list = this.props.list.map(function(poi, index) {
@@ -165,7 +160,7 @@ POIList = React.createClass({
   }
 }),
 POI = React.createClass({
-  getInitialState: function(){
+  getInitialState: function() {
     var marker = new google.maps.Marker({
         title: this.props.poi.title+'//'+this.props.poi.address.street,
         position: new google.maps.LatLng(this.props.poi.lat, this.props.poi.lng),
@@ -176,18 +171,18 @@ POI = React.createClass({
       marker: marker
     };
   },
-  getDefaultProps: function(){
+  getDefaultProps: function() {
     return {
       show: false
     }
   },
-  shouldComponentUpdate: function(nextProps, nextState){
-    return nextProps.show !== this.props.show; // || !equal(nextState, this.state);
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return nextProps.show !== this.props.show;
   },
   handleClick: function() {
-    this.props.handleToggleDetails(this.props.poi);
+    this.props.handleToggleDetails(this.props.poi, this.props.index);
   },
-  render: function(){
+  render: function() {
     if (this.props.show) {
 
       this.state.marker.setMap(this.props.map);
@@ -199,7 +194,7 @@ POI = React.createClass({
     return (
       <li onClick={this.handleClick}
         key={this.props.poi.name} 
-        style={{display: this.props.show ? 'list-item' : 'none'} }>
+        style={{display: this.props.show ? 'list-item' : 'none'} } >
         <h3>{this.props.poi.title}</h3> 
       </li>);
   }
@@ -218,8 +213,7 @@ POIDetails = React.createClass({
       }
     }
   },
-  handleClose: function(){
-    console.log('close click');
+  handleClose: function() {
     this.props.handleToggleDetails(null);
   },
   handleChangeTitle: function(value) {
@@ -234,8 +228,8 @@ POIDetails = React.createClass({
   render: function() {
     var categories = [];
 
-    if(this.state.poi.category){
-      this.state.poi.category.map(function(cat){
+    if(this.state.poi.category) {
+      this.state.poi.category.map(function(cat) {
         categories.push(<span className="category">{cat}</span>);
       });
     }
