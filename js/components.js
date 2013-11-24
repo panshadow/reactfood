@@ -222,7 +222,16 @@ POIDetails = React.createClass({
     console.log('close click');
     this.props.handleToggleDetails(null);
   },
-  render: function(){
+  handleChangeTitle: function(value) {
+    var poi = this.props.list.get(this.state.index);
+    poi.title = value;
+    this.props.list.set(this.state.index, poi);
+    this.props.list.save();
+
+    this.setState({ poi: poi });
+
+  },
+  render: function() {
     var categories = [];
 
     if(this.state.poi.category){
@@ -234,7 +243,9 @@ POIDetails = React.createClass({
     return (
       <div className="panel details" style={{display: this.props.show ? 'block' : 'none'}}>
         <button onClick={this.handleClose}>close</button>
-        <h3>{this.state.poi.title}</h3>
+        <h3>
+          <EditableString onSave={this.handleChangeTitle}>{this.state.poi.title}</EditableString>
+        </h3>
         <address>{this.state.poi.address.street}</address>
         <p className="info">{this.state.poi.info.note}</p>
         <div className="categories">
@@ -243,4 +254,45 @@ POIDetails = React.createClass({
       </div>
     );
   }
-});
+}),
+EditableString = React.createClass({
+  getInitialState: function() {
+    return {
+      editable: false
+    };
+  },
+  toggleEdit: function() {
+    if (this.state.editable) {
+      this.setState({
+        editable: false
+      });
+      this.props.onSave(this.state.value);
+    }
+    else {
+      this.setState({
+        editable: true,
+        value: this.props.children
+      });
+    }
+  },
+  handleChange: function(event) {
+    this.setState({value: event.target.value });
+  },
+  render: function() {
+    if (this.state.editable) {
+      return (
+        <input 
+          type="text" 
+          value={this.state.value} 
+          onChange={this.handleChange}
+          onBlur={this.toggleEdit} />
+      )
+    }
+    else{
+      return (
+        <span onDoubleClick={this.toggleEdit}>{this.props.children}</span>
+      )
+    }
+  }
+})
+;
