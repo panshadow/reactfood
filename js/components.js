@@ -42,15 +42,23 @@ var mapComponent = React.createClass({
         }
       });
 
-      this.refs.details.setState({
-        show: false
-      });
+      this.handleToggleDetails(null);
   },
   handleToggleDetails: function(poi) {
-    this.refs.details.setState({
-      show: true,
-      poi: poi
-    });
+    if (poi!== null) {
+      this.refs.details.setState({
+        poi: poi
+      });
+      this.setState({
+        showDetails: true
+      });
+    }
+    else{
+      this.setState({
+        showDetails: false
+      });
+      this.forceUpdate();
+    }
   },
   getDefaultProps: function() {
     return {
@@ -60,6 +68,7 @@ var mapComponent = React.createClass({
   getInitialState: function() {
     return {
       map: null,
+      showDetails: false,
       bounds: {
         sw: {
           lat: 0,
@@ -74,7 +83,9 @@ var mapComponent = React.createClass({
   },
 
   render: function() {
-    var bounds = this.state.bounds;
+    var bounds = this.state.bounds,
+      showDetails = this.state.showDetails;
+    console.log('render map ',showDetails);
 
     return (
       <div className="map-component">
@@ -87,13 +98,16 @@ var mapComponent = React.createClass({
              bounds.ne.lng.toFixed(2)].join(', ')
            }
         </div>
-        <POIDetails ref="details" />
+        <POIDetails 
+          ref="details" 
+          handleToggleDetails={this.handleToggleDetails} 
+          show={showDetails} />
         <POIList 
+        show={this.props.cf.show}
           bounds={this.state.bounds} 
           list={this.props.list} 
           map={this.state.map} 
-          handleToggleDetails={this.handleToggleDetails}
-          />
+          handleToggleDetails={this.handleToggleDetails} />
       </div>
       );
   },
