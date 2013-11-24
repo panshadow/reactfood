@@ -5,7 +5,7 @@ var mapComponent = React.createClass({
     var self = this;
     google.maps.event.addDomListener(window, 'load', function(){
       var mapOptions = {},
-        bounds = self.props.bounds,
+        bounds = self.props.cf.bounds,
         map = new google.maps.Map(self.refs.map.getDOMNode(), mapOptions),
         mapBounds = new google.maps.LatLngBounds(
             new google.maps.LatLng(bounds[0], bounds[1]),
@@ -154,7 +154,7 @@ POIList = React.createClass({
         handleToggleDetails={this.props.handleToggleDetails} />);
     }.bind(this));
     return (
-      <div className="panel side-bar right">
+      <div className="panel side-bar right" style={{display:this.props.show?'block':'none'}}>
         <ul>
           {list}
         </ul>
