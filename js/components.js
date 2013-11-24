@@ -240,8 +240,9 @@ POIDetails = React.createClass({
         <h3>
           <EditableString onSave={this.handleChangeTitle}>{this.state.poi.title}</EditableString>
         </h3>
-        <address>{this.state.poi.address.street}</address>
+        <address>{this.state.poi.address.street} ({this.state.poi.lat}, {this.state.poi.lng})</address>
         <p className="info">{this.state.poi.info.note}</p>
+
         <div className="categories">
           {categories}
         </div>

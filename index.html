@@ -22,18 +22,25 @@
   <script type="text/jsx">
   /** @jsx React.DOM */
 
-  var POIs = POIStorage({
+  var bounds = [50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625],
+    POIs = POIStorage({
       key: 'pois',
       url: 'js/restaurants.json'
     });
   POIs.load(function(){
       React.renderComponent(
         <div>
+          <strong>
+            {'{bounds: bounds, show: true}'}
+          </strong>
           <mapComponent 
-            cf={{bounds:[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625], show: false}} 
+            cf={{bounds:bounds, show: true}} 
             list={POIs} />
+          <strong>
+            {'{bounds:bounds, show: false}'}
+          </strong>
           <mapComponent 
-            cf={{bounds:[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625],show: true, followHash: true}}
+            cf={{bounds:bounds,show: false}}
             list={POIs} />
         </div>,
         document.getElementById('zero-layer')
