@@ -273,12 +273,24 @@ EditableString = React.createClass({
   handleChange: function(event) {
     this.setState({value: event.target.value });
   },
+  handleKeys: function(event) {
+    if( event.keyCode === 13) {
+      this.toggleEdit();
+    }
+  },
+  componentDidUpdate: function() {
+    if (this.state.editable) {
+      this.refs.input.getDOMNode().focus();
+    }
+  },
   render: function() {
     if (this.state.editable) {
       return (
         <input 
+          ref="input"
           type="text" 
-          value={this.state.value} 
+          value={this.state.value}
+          onKeyPress={this.handleKeys}
           onChange={this.handleChange}
           onBlur={this.toggleEdit} />
       )
