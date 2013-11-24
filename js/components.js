@@ -172,14 +172,7 @@ POI = React.createClass({
     this.props.handleToggleDetails(this.props.poi);
   },
   render: function(){
-    var categories = [];
-
     if (this.props.show) {
-      if ('category' in this.props.poi) {
-        categories = this.props.poi.category.map(function(cat){
-          return (<span className="category">{cat}</span>);
-        });
-      };
 
       this.state.marker.setMap(this.props.map);
     }
@@ -192,42 +185,46 @@ POI = React.createClass({
         key={this.props.poi.name} 
         style={{display: this.props.show ? 'list-item' : 'none'} }>
         <h3>{this.props.poi.title}</h3> 
-        <div className="categories">
-          {categories}
-        </div>
       </li>);
   }
 }),
 POIDetails = React.createClass({
   getInitialState: function() {
     return {
-      show: false,
-      poi: null
+      poi: {
+        title: '',
+        address: {
+          street: ''
+        },
+        info: {
+          note: ''
+        }
+      }
     }
   },
   handleClose: function(){
-    this.setState({
-      show: false
-    });
+    console.log('close click');
+    this.props.handleToggleDetails(null);
   },
   render: function(){
-    console.log('details render');
-    if (this.state.show) {
-      return (
-        <div className="panel details">
-          <button onClick={this.handleClose}>close</button>
-          <h3>{this.state.poi.title}</h3>
-          <div className="address">{this.state.poi.address.street}</div>
-          <div className="info">{this.state.poi.info.note}</div>
+    var categories = [];
+
+    if(this.state.poi.category){
+      this.state.poi.category.map(function(cat){
+        categories.push(<span className="category">{cat}</span>);
+      });
+    }
+
+    return (
+      <div className="panel details" style={{display: this.props.show ? 'block' : 'none'}}>
+        <button onClick={this.handleClose}>close</button>
+        <h3>{this.state.poi.title}</h3>
+        <address>{this.state.poi.address.street}</address>
+        <p className="info">{this.state.poi.info.note}</p>
+        <div className="categories">
+          {categories}
         </div>
-      )
-    }
-    else{
-      return <div />;
-    }
+      </div>
+    );
   }
 });
-
-
-
-
