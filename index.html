@@ -13,40 +13,32 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbI1fN1caojosiUpJbRWuJ-yd64A6GNtU&amp;sensor=false">
   </script>
 
+  <script type="text/javascript" src="js/poistorage.js"></script>
   <script type="text/jsx" src="js/components.js"></script>
 </head>
 <body>
   <div id="zero-layer"></div>
 
-
-
-  <script type="text/javascript">
-    var lsKey='pois',
-      POIs = null;
-
-    $(function(){
-      if ( !(lsKey in localStorage) ) {
-        $.getJSON('js/restaurants.json', function(data){
-          POIs = data
-          localStorage[lsKey] = JSON.stringify(POIs);
-          console.log('...fetched');
-        });
-      }
-      else {
-        POIs = JSON.parse(localStorage[lsKey]);
-      }
-    });
-  </script>
-
   <script type="text/jsx">
   /** @jsx React.DOM */
 
-  React.renderComponent(
-    <mapComponent 
-      cf={{bounds:[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625], show: false}} 
-      list={POIs} />,
-    document.getElementById('zero-layer')
-  );
+  var POIs = POIStorage({
+      key: 'pois',
+      url: 'js/restaurants.json'
+    });
+  POIs.load(function(){
+      React.renderComponent(
+        <div>
+          <mapComponent 
+            cf={{bounds:[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625], show: false}} 
+            list={POIs} />
+          <mapComponent 
+            cf={{bounds:[50.40939273394137, 30.421142578125, 50.48809484049479, 30.640869140625],show: true, followHash: true}}
+            list={POIs} />
+        </div>,
+        document.getElementById('zero-layer')
+      );
+    });
   </script>
 </body>
 </html>

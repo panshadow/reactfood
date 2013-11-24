@@ -100,6 +100,7 @@ var mapComponent = React.createClass({
         </div>
         <POIDetails 
           ref="details" 
+          list={this.props.list}
           handleToggleDetails={this.handleToggleDetails} 
           show={showDetails} />
         <POIList 
@@ -146,9 +147,10 @@ POIList = React.createClass({
     console.log('clck!');
   },
   render: function() {
-    var list = this.props.list.map(function(poi){
+    var list = this.props.list.map(function(poi, index) {
       return (<POI 
-        poi={poi} 
+        poi={poi}
+        index={index}
         map={this.props.map} 
         show={this.inBounds(poi)} 
         handleToggleDetails={this.props.handleToggleDetails} />);
