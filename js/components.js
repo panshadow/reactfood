@@ -5,17 +5,33 @@ var mapComponent = React.createClass({
     var mapOptions = {},
       bounds = this.props.cf.bounds,
       map = new google.maps.Map(this.refs.map.getDOMNode(), mapOptions),
-      mapBounds = new google.maps.LatLngBounds(
+      mapBounds,
+      hashParams = null;
+
+    if (this.props.followHash) {
+      hashParams = this.parseHash();
+      if (hashParams.bounds) {
+        bounds = hashParams.bounds;  
+      }
+      
+    }
+
+    mapBounds = new google.maps.LatLngBounds(
           new google.maps.LatLng(bounds[0], bounds[1]),
           new google.maps.LatLng(bounds[2], bounds[3])
         );
 
-    google.maps.event.addListener(map, 'bounds_changed', this.handleChangeBounds);
-    this.setState({
-      map: map
-    });
-    
     map.fitBounds(mapBounds);
+    google.maps.event.addListener(map, 'bounds_changed', this.handleChangeBounds);
+    
+    this.setState({
+      map: map,
+      bounds: {
+        sw: { lat: bounds[0], lng: bounds[1] },
+        ne: { lat: bounds[2], lng: bounds[3] }
+      },
+      followHash: this.props.followHash
+    });
   },
   handleChangeBounds: function(evt) {
     var bound = this.state.map.getBounds(),
@@ -35,7 +51,7 @@ var mapComponent = React.createClass({
           }
         }
       });
-
+      this.updateLocation();
       this.handleToggleDetails(null);
   },
   handleToggleDetails: function(poi, index) {
@@ -46,7 +62,8 @@ var mapComponent = React.createClass({
       });
       this.setState({
         showDetails: true,
-        showPOIName: poi.name
+        showPOIName: poi.name,
+        showPOIIndex: index
       });
     }
     else{
@@ -56,10 +73,20 @@ var mapComponent = React.createClass({
       this.forceUpdate();
     }
   },
+  parseHash: function() {
+    var hash = location.hash.substring(1),
+      params, state={};
+    if (hash) {
+      state.bounds = hash.split(',').map(function(val) { return parseFloat(val); });
+    }
+
+    return state;
+  },
   getInitialState: function() {
     return {
       map: null,
       showDetails: false,
+      followHash: false,
       bounds: {
         sw: {
           lat: 0,
@@ -72,13 +99,13 @@ var mapComponent = React.createClass({
       }
     };
   },
-  handleMouseUp: function() {
-    var b = this.state.bounds,
+  updateLocation: function() {
+    var b, hash;
+    if (this.state.followHash) {
+      b = this.state.bounds;
       hash = [b.sw.lat, b.sw.lng, b.ne.lat, b.ne.lng].join(',');
-    if( this.state.showDetails ){
-      hash = this.state.showPOIName + ';' +hash;
+      location.hash = hash;
     }
-    location.hash = hash;
   },
   getDefaultProps: function() {
     return {
@@ -93,8 +120,8 @@ var mapComponent = React.createClass({
       showDetails = this.state.showDetails;
 
     return (
-      <div className="map-component" onMouseDown={this.handleMouseUp}>
-        <div ref="map" className="map"/>
+      <div className="map-component">
+        <div ref="map" className="map"  onMouseUp={this.updateLocation}/>
         <div ref="boundsLabel" className="panel bounds-label">
           {
             [bounds.sw.lat.toFixed(2),
@@ -234,7 +261,7 @@ POIDetails = React.createClass({
   render: function() {
     var categories = [];
 
-    if(this.state.poi.category) {
+    if (this.state.poi.category) {
       this.state.poi.category.map(function(cat) {
         categories.push(<span className="category">{cat}</span>);
       });
@@ -280,7 +307,7 @@ EditableString = React.createClass({
     this.setState({value: event.target.value });
   },
   handleKeys: function(event) {
-    if( event.keyCode === 13) {
+    if ( event.keyCode === 13) {
       this.toggleEdit();
     }
   },
