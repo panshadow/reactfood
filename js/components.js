@@ -2,24 +2,20 @@
 
 var mapComponent = React.createClass({
   googleMapInit: function() {
-    var self = this;
-    google.maps.event.addDomListener(window, 'load', function() {
-      var mapOptions = {},
-        bounds = self.props.cf.bounds,
-        map = new google.maps.Map(self.refs.map.getDOMNode(), mapOptions),
-        mapBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(bounds[0], bounds[1]),
-            new google.maps.LatLng(bounds[2], bounds[3])
-          );
+    var mapOptions = {},
+      bounds = this.props.cf.bounds,
+      map = new google.maps.Map(this.refs.map.getDOMNode(), mapOptions),
+      mapBounds = new google.maps.LatLngBounds(
+          new google.maps.LatLng(bounds[0], bounds[1]),
+          new google.maps.LatLng(bounds[2], bounds[3])
+        );
 
-        google.maps.event.addListener(map, 'bounds_changed', self.handleChangeBounds);
-        self.setState({
-          map: map
-        });
-        
-        map.fitBounds(mapBounds);
+    google.maps.event.addListener(map, 'bounds_changed', this.handleChangeBounds);
+    this.setState({
+      map: map
     });
-
+    
+    map.fitBounds(mapBounds);
   },
   handleChangeBounds: function(evt) {
     var bound = this.state.map.getBounds(),
