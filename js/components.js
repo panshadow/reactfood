@@ -2,24 +2,20 @@
 
 var mapComponent = React.createClass({
   googleMapInit: function() {
-    var self = this;
-    google.maps.event.addDomListener(window, 'load', function() {
-      var mapOptions = {},
-        bounds = self.props.cf.bounds,
-        map = new google.maps.Map(self.refs.map.getDOMNode(), mapOptions),
-        mapBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(bounds[0], bounds[1]),
-            new google.maps.LatLng(bounds[2], bounds[3])
-          );
+    var mapOptions = {},
+      bounds = this.props.cf.bounds,
+      map = new google.maps.Map(this.refs.map.getDOMNode(), mapOptions),
+      mapBounds = new google.maps.LatLngBounds(
+          new google.maps.LatLng(bounds[0], bounds[1]),
+          new google.maps.LatLng(bounds[2], bounds[3])
+        );
 
-        google.maps.event.addListener(map, 'bounds_changed', self.handleChangeBounds);
-        self.setState({
-          map: map
-        });
-        
-        map.fitBounds(mapBounds);
+    google.maps.event.addListener(map, 'bounds_changed', this.handleChangeBounds);
+    this.setState({
+      map: map
     });
-
+    
+    map.fitBounds(mapBounds);
   },
   handleChangeBounds: function(evt) {
     var bound = this.state.map.getBounds(),
@@ -60,11 +56,6 @@ var mapComponent = React.createClass({
       this.forceUpdate();
     }
   },
-  getDefaultProps: function() {
-    return {
-      showList: false
-    };
-  },
   getInitialState: function() {
     return {
       map: null,
@@ -81,7 +72,6 @@ var mapComponent = React.createClass({
       }
     };
   },
-
   handleMouseUp: function() {
     var b = this.state.bounds,
       hash = [b.sw.lat, b.sw.lng, b.ne.lat, b.ne.lng].join(',');
@@ -90,7 +80,14 @@ var mapComponent = React.createClass({
     }
     location.hash = hash;
   },
-
+  getDefaultProps: function() {
+    return {
+      cf: {
+        bounds: [0,0,0,0],
+        showList: false
+      }
+    };
+  },
   render: function() {
     var bounds = this.state.bounds,
       showDetails = this.state.showDetails;
@@ -112,7 +109,7 @@ var mapComponent = React.createClass({
           handleToggleDetails={this.handleToggleDetails} 
           show={showDetails} />
         <POIList 
-        show={this.props.cf.show}
+        show={this.props.cf.showList}
           bounds={this.state.bounds} 
           list={this.props.list} 
           map={this.state.map} 

@@ -7,3 +7,6 @@ React.js demo
 
 *status*: not quite done
 
+### Notes ###
+ * Details Dialog: Double click on title for edit. Save on blur. 
+

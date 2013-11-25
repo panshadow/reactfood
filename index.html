@@ -34,13 +34,13 @@
             {'{bounds: bounds, show: true}'}
           </strong>
           <mapComponent 
-            cf={{bounds:bounds, show: true}} 
+            cf={{bounds:bounds, showList: true}} 
             list={POIs} />
           <strong>
             {'{bounds:bounds, show: false}'}
           </strong>
           <mapComponent 
-            cf={{bounds:bounds,show: false}}
+            cf={{bounds:bounds,showList: false}}
             list={POIs} />
         </div>,
         document.getElementById('zero-layer')
