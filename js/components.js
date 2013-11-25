@@ -49,7 +49,8 @@ var mapComponent = React.createClass({
         index: index
       });
       this.setState({
-        showDetails: true
+        showDetails: true,
+        showPOIName: poi.name
       });
     }
     else{
@@ -81,13 +82,22 @@ var mapComponent = React.createClass({
     };
   },
 
+  handleMouseUp: function() {
+    var b = this.state.bounds,
+      hash = [b.sw.lat, b.sw.lng, b.ne.lat, b.ne.lng].join(',');
+    if( this.state.showDetails ){
+      hash = this.state.showPOIName + ';' +hash;
+    }
+    location.hash = hash;
+  },
+
   render: function() {
     var bounds = this.state.bounds,
       showDetails = this.state.showDetails;
 
     return (
-      <div className="map-component">
-        <div ref="map" className="map" />
+      <div className="map-component" onMouseDown={this.handleMouseUp}>
+        <div ref="map" className="map"/>
         <div ref="boundsLabel" className="panel bounds-label">
           {
             [bounds.sw.lat.toFixed(2),
@@ -111,7 +121,6 @@ var mapComponent = React.createClass({
       );
   },
   componentDidMount: function(rootNode) {
-    var self = this;
     this.googleMapInit();
   }
 }),
