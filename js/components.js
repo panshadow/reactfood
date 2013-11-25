@@ -55,11 +55,6 @@ var mapComponent = React.createClass({
       this.forceUpdate();
     }
   },
-  getDefaultProps: function() {
-    return {
-      showList: false
-    };
-  },
   getInitialState: function() {
     return {
       map: null,
@@ -76,7 +71,14 @@ var mapComponent = React.createClass({
       }
     };
   },
-
+  getDefaultProps: function() {
+    return {
+      cf: {
+        bounds: [0,0,0,0],
+        showList: false
+      }
+    };
+  },
   render: function() {
     var bounds = this.state.bounds,
       showDetails = this.state.showDetails;
@@ -98,7 +100,7 @@ var mapComponent = React.createClass({
           handleToggleDetails={this.handleToggleDetails} 
           show={showDetails} />
         <POIList 
-        show={this.props.cf.show}
+        show={this.props.cf.showList}
           bounds={this.state.bounds} 
           list={this.props.list} 
           map={this.state.map} 
@@ -107,7 +109,6 @@ var mapComponent = React.createClass({
       );
   },
   componentDidMount: function(rootNode) {
-    var self = this;
     this.googleMapInit();
   }
 }),
